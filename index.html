@@ -4,14 +4,92 @@
 <head>
     <meta charset="utf-8">
     <title></title>
+    <script src="dust-full.js" charset="utf-8"></script>
     <script src="janus.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <style media="screen">
+        .room {
+            width: 100%;
+            cursor: pointer;
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid deepskyblue;
+            border-radius: 5px;
+        }
+
+        .room .icon {
+            display: inline-block;
+            width: 16px;
+        }
+
+        .room .name {
+            display: inline-block;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="feria">
-
-    </div>
+    <div class="sound"></div>
+    <div id="roomList"></div>
+    <script type="html/dust" id="room_template">
+        <div class="room" id="room{room}" value="{room}">
+            <div class="icon">
+                <span class="fa fa-home"></span>
+            </div>
+            <div class="name">
+                {description}
+            </div>
+            <div class="participants">
+                {#participants} {display} {/participants}
+            </div>
+        </div>
+    </script>
     <script src="audiobridgetest.js" charset="utf-8"></script>
+    <script type="text/javascript">
+        var joined = false;
+
+        function renderRooms(rooms) {
+            document.querySelector('#roomList').innerHTML = '';
+            rooms.forEach(function(room) {
+                if (!joined) {
+                    joinRoom(room.room);
+                    joined = true;
+                }
+                participants(room.room, function(people) {
+                    room.participants = people;
+                    dust.renderSource(document.querySelector("#room_template").textContent, room, function(err, out) {
+                        document.querySelector('#roomList').innerHTML += out;
+                        setTimeout(function() {
+                            document.querySelector('#room' + room.room).addEventListener('dblclick', function() {
+                                changeRoom(room.room);
+                            });
+                        }, 500);
+                    });
+                });
+            });
+        }
+
+        update = function() {
+            listRooms(function(rooms) {
+                renderRooms(rooms)
+            });
+        }
+
+        setTimeout(function() {
+            listRooms(function(rooms) {
+                renderRooms(rooms)
+            });
+        }, 1000);
+    </script>
 </body>
 
 </html>

@@ -8,7 +8,8 @@ var webrtcUp = false;
 
 
 Janus.init({
-    debug: "all"/*false*/,
+    //debug: "all",
+    debug: false,
     callback: function() {
         if (!Janus.isWebrtcSupported()) {
             alert("No WebRTC support... ");
@@ -76,7 +77,6 @@ Janus.init({
                             } else if (event === "roomchanged") {
                                 myid = msg["id"];
                                 Janus.log("Moved to room " + msg["room"] + ", new ID: " + myid);
-                                $('#list').empty();
                                 if (msg["participants"] !== undefined && msg["participants"] !== null) {
                                     var list = msg["participants"];
                                     Janus.debug("Got a list of participants:");
@@ -120,13 +120,14 @@ Janus.init({
                                 jsep: jsep
                             });
                         }
+                        update();
                     },
                     onlocalstream: function(stream) {
                         Janus.debug(" ::: Got a local stream :::");
                         Janus.debug(JSON.stringify(stream));
                     },
                     onremotestream: function(stream) {
-                        document.querySelector('.feria').innerHTML = '<audio class="rounded centered" id="roomaudio" width="100%" height="100%" autoplay/>';
+                        document.querySelector('.sound').innerHTML = '<audio class="rounded centered" id="roomaudio" width="100%" height="100%" autoplay/>';
                         attachMediaStream(document.querySelector('#roomaudio'), stream);
                     },
                     oncleanup: function() {
@@ -148,13 +149,67 @@ Janus.init({
 
 
 function registerUsername(username) {
+    myusername = username;
+}
+
+function joinRoom(room) {
     var register = {
         "request": "join",
-        "room": myroom,
-        "display": username
+        "room": room,
+        "display": myusername
     };
-    myusername = username;
     mixertest.send({
         "message": register
+    });
+}
+
+function createRoom(name) {
+    var create = {
+        "request": "create",
+        "permanent": false,
+        "description": name,
+        //"pin" : "<password required to join the room, optional>",
+    };
+    mixertest.send({
+        "message": create,
+        "success": function(rom) {
+            console.log('Room created ' + rom.room);
+        }
+    });
+}
+
+function changeRoom(room) {
+    var register = {
+        "request": "changeroom",
+        "room": room,
+        "display": myusername
+    };
+    mixertest.send({
+        "message": register
+    });
+}
+
+function participants(room, cb) {
+    var register = {
+        "request": "listparticipants",
+        "room": room
+    };
+    mixertest.send({
+        "message": register,
+        "success": function(res) {
+            cb(res.participants);
+        }
+    });
+}
+
+function listRooms(cb) {
+    var msg = {
+        "request": "list"
+    };
+    mixertest.send({
+        "message": msg,
+        "success": function(a) {
+            cb(a.list);
+        }
     });
 }
