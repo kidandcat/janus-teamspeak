@@ -12,7 +12,7 @@ html {
 }
 
 button {
-  color: deepskyblue;
+  color: #337ab7;
   font-size: 2em;
   border: none;
   background: none;
@@ -37,7 +37,7 @@ button {
     cursor: pointer;
     padding: 10px;
     margin: 5px;
-    border: 1px solid deepskyblue;
+    border: 1px solid #337ab7;
     border-radius: 5px;
 }
 
@@ -74,6 +74,7 @@ button {
   margin-left: 50%;
   transform: translateX(-50%);
   text-align: center;
+  color: #337ab7;
 }
 
 footer {

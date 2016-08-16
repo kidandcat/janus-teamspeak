@@ -19,7 +19,7 @@
         Salas de Audio
     </div>
     <div class="controls">
-      <button type="button" name="newRoom" onclick="create()">+</button>
+        <button type="button" name="newRoom" onclick="create()">+</button>
     </div>
     <div id="roomList"></div>
     <script type="html/dust" id="room_template">
@@ -45,9 +45,10 @@
     <script src="audiobridgetest.js" charset="utf-8"></script>
     <script type="text/javascript">
         var joined = false;
+        var listener = [];
 
         function renderRooms(rooms) {
-            document.querySelector('#roomList').innerHTML = '';
+            var first = true;
             rooms.forEach(function(room) {
                 if (!joined) {
                     joinRoom(room.room);
@@ -56,6 +57,10 @@
                 participants(room.room, function(people) {
                     room.participants = people;
                     dust.renderSource(document.querySelector("#room_template").textContent, room, function(err, out) {
+                        if (first) {
+                            document.querySelector('#roomList').innerHTML = '';
+                            first = false;
+                        }
                         document.querySelector('#roomList').innerHTML += out;
                         setTimeout(function() {
                             document.querySelector('#room' + room.room).addEventListener('dblclick', function() {
@@ -73,12 +78,12 @@
             });
         }
 
-        function destroy(elem){
-          destroyRoom(elem.getAttribute('value'));
+        function destroy(elem) {
+            destroyRoom(elem.getAttribute('value'));
         }
 
-        function create(){
-          createRoom(prompt());
+        function create() {
+            createRoom(prompt());
         }
 
         setTimeout(function() {

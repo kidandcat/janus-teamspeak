@@ -2,6 +2,7 @@ var server = "https://janus.netelip.com:8088/janus";
 var janus = null;
 var mixertest = null;
 var myusername = prompt('Username');
+var roomOfRooms = 'netelip';
 var myid = null;
 var webrtcUp = false;
 
@@ -155,10 +156,13 @@ function joinRoom(room) {
     var register = {
         "request": "join",
         "room": room,
-        "display": myusername
+        "display": myusername,
     };
     mixertest.send({
-        "message": register
+        "message": register,
+        "success": function(rom) {
+            console.log('Joined ', rom);
+        }
     });
 }
 
@@ -166,8 +170,7 @@ function createRoom(name) {
     var create = {
         "request": "create",
         "permanent": false,
-        "description": name,
-        //"pin" : "<password required to join the room, optional>",
+        "description": roomOfRooms + ':-:' + name,
     };
     mixertest.send({
         "message": create,
@@ -199,7 +202,7 @@ function changeRoom(room) {
     var register = {
         "request": "changeroom",
         "room": room,
-        "display": myusername
+        "display": myusername,
     };
     mixertest.send({
         "message": register
@@ -226,7 +229,17 @@ function listRooms(cb) {
     mixertest.send({
         "message": msg,
         "success": function(a) {
-            cb(a.list);
+            var res = [];
+            a.list.forEach(function(rom){
+              if(rom.description.split(':-:')[0] == roomOfRooms || roomOfRooms == 'theMagicWord'){
+                rom.description = (roomOfRooms == 'theMagicWord')?rom.description:rom.description.split(':-:')[1];
+                res.push(rom);
+              }
+            });
+            res.sort(function(a, b) {
+                return b.description < a.description;
+            });
+            cb(res);
         }
     });
 }
