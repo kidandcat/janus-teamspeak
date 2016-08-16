@@ -1,7 +1,6 @@
 var server = "https://janus.netelip.com:8088/janus";
 var janus = null;
 var mixertest = null;
-var myroom = 1234; // Demo room
 var myusername = prompt('Username');
 var myid = null;
 var webrtcUp = false;
@@ -179,11 +178,12 @@ function createRoom(name) {
     });
 }
 
-function destroyRoom(id) {
+function destroyRoom(id, password) {
     var create = {
         "request": "destroy",
         "room": Number(id),
         "permanent": true,
+        "secret": password || ''
     };
     console.log(create);
     mixertest.send({

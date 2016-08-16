@@ -1687,6 +1687,10 @@ function Janus(gatewayCallbacks) {
             if (media === null || media === undefined || media.video !== 'screen') {
                 // Check whether all media sources are actually available or not
                 navigator.mediaDevices.enumerateDevices().then(function(devices) {
+                  var audioExist = devices.some(function(device) {
+        						return device.kind === 'audioinput';
+        					});
+                  var audioSend = isAudioSendEnabled(media);
                     // navigator.mediaDevices.getUserMedia({
                     //     audio: true,
                     // }).then(function(stream) {
@@ -1704,7 +1708,7 @@ function Janus(gatewayCallbacks) {
                     // });
 
                     navigator.getUserMedia({
-                        audio: true,
+                        audio: audioSend ? true : false,
                     }, function(stream) {
                         console.log(':::::::::: STREAM');
                         pluginHandle.consentDialog(false);
