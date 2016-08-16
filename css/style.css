@@ -1,0 +1,85 @@
+#roomList {
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+}
+
+html {
+  max-width: 1000px;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  height: 100%;
+}
+
+button {
+  color: deepskyblue;
+  font-size: 2em;
+  border: none;
+  background: none;
+  padding: 0;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.destroyIcon {
+  color: red;
+  position: absolute;
+  right: 15px;
+  display: inline-block;
+}
+
+.sound {
+  display: none;
+}
+
+.room {
+    flex: 1;
+    cursor: pointer;
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid deepskyblue;
+    border-radius: 5px;
+}
+
+.room .icon {
+    display: inline-block;
+    width: 16px;
+}
+
+.room .name {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.participants {
+  margin: 10px 0 10px 10px;
+}
+
+.participant {
+  color: gray;
+}
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.title {
+  margin: 10px;
+  font-size: 2em;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+footer {
+  position: absolute;
+  bottom: 5px;
+  text-align: center;
+  width: 100%;
+  font-size: 0.8em;
+}

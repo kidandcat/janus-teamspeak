@@ -174,6 +174,23 @@ function createRoom(name) {
         "message": create,
         "success": function(rom) {
             console.log('Room created ' + rom.room);
+            update();
+        }
+    });
+}
+
+function destroyRoom(id) {
+    var create = {
+        "request": "destroy",
+        "room": Number(id),
+        "permanent": true,
+    };
+    console.log(create);
+    mixertest.send({
+        "message": create,
+        "success": function(rom) {
+            console.log('Room destroyed ', rom);
+            update();
         }
     });
 }
